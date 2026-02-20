@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Report Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+
+    <h2>📄 Medical Report Summary</h2>
+    <p>Upload a digital medical report (PDF).</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="upload">
+
+        <div class="file-upload">
+            <input type="file" id="pdfInput" name="pdf" accept=".pdf" hidden>
+
+            <label for="pdfInput" class="file-box">
+                📂 Choose PDF file
+            </label>
+
+            <span id="fileName" class="file-name">
+                {{ filename if filename else "No file selected" }}
+            </span>
+
+        </div>
+
+        <button type="submit">Upload Report</button>
+    </form>
+
+    <script>
+    const pdfInput = document.getElementById("pdfInput");
+    const fileName = document.getElementById("fileName");
+
+    pdfInput.addEventListener("change", function () {
+        fileName.textContent = this.files.length
+            ? this.files[0].name
+            : "No file selected";
+    });
+    </script>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if uploaded%}
+        <div class="button-row">
+
+            <form method="POST">
+                <input type="hidden" name="action" value="view_ai">
+                <button type="submit">🧠 View AI Explanation</button>
+            </form>
+
+            <form method="POST">
+                <input type="hidden" name="action" value="view_text">
+                <button type="submit" class="secondary">
+                    📄 View Extracted Text
+                </button>
+            </form>
+
+        </div>
+    {% endif %}
+
+
+    {% if view_mode == "ai" %}
+        <div class="ai-box">
+            <div class="ai-header">
+                🧠 Simplified AI Explanation
+            </div>
+
+            <div class="ai-content">
+                {{ summary | safe }}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if view_mode == "text" %}
+        <div class="ai-box">
+            <div class="ai-header">
+                📄 Extracted Report Text
+            </div>
+
+            <pre class="report-text">{{ extracted_text }}</pre>
+        </div>
+    {% endif %}
+
+
+</div>
+</body>
+</html>

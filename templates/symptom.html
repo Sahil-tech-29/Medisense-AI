@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disease Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+
+    <div class="page-header">
+        <h2>🩺 Symptom-Based Disease Prediction</h2>
+        <p>Enter your symptoms in plain language and get AI-based insights.</p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            <label class="form-label">Describe your symptoms</label>
+            <textarea
+                name="symptoms"
+                placeholder="e.g. fever, headache, body pain"
+                rows="4"
+            >{{ symptoms or "" }}</textarea>
+
+            <button type="submit">Predict Disease</button>
+        </form>
+    </div>
+
+    {% if disease %}
+    <div class="result-box condition-box">
+        <h3>🧾 Possible Condition</h3>
+        <h2 class="disease-name">{{ disease }}</h2>
+    </div>
+
+    <div class="ai-box">
+        <details open>
+            <h3>💡 AI Explanation</h3>
+            <div class="ai-content">
+                {{ explanation | safe }}
+            </div>
+        </details>
+    </div>
+    {% endif %}
+
+
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preventive Health</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container preventive-page">
+
+    <!-- Back -->
+    <a href="/" class="back-link">⬅ Back to Home</a>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h2>🌿 Preventive Health Risk Awareness</h2>
+        <p>
+            Provide lifestyle and daily habit details to receive
+            AI-based preventive health awareness insights.
+        </p>
+    </div>
+
+
+    {% if error %}
+    <div class="inline-warning">
+        ⚠️ {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- Form Card -->
+    <div class="form-card">
+        <form method="POST">
+
+            <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" name="age" min="0" max="100"
+                       placeholder="Enter age" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Physical Activity</label>
+                <select name="activity">
+                    <option value="" disabled selected>Select activity level</option>
+                    <option value="High">High (regular exercise)</option>
+                    <option value="Moderate">Moderate</option>
+                    <option value="Low">Low (sedentary)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Diet Pattern</label>
+                <select name="diet">
+                    <option value="" disabled selected>Select diet pattern</option>
+                    <option value="Balanced">Balanced</option>
+                    <option value="Mixed">Mixed</option>
+                    <option value="Junk / Irregular">Junk / Irregular</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Sleep Duration (hours)</label>
+                <input type="range" name="sleep" min="0" max="15" value="0"
+                       oninput="sleepVal.innerText=this.value">
+                <span class="range-value">
+                    <b><span id="sleepVal">-</span> hours</b>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Stress Level (1 = Low, 5 = Very High)</label>
+                <input type="range" name="stress" min="1" max="5" value="1"
+                       oninput="stressVal.innerText=this.value">
+                <span class="range-value">
+                    <b>Level <span id="stressVal">1</span></b>
+                </span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Smoking</label>
+                <select name="smoking">
+                    <option>No</option>
+                    <option>Occasional</option>
+                    <option>Regular</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Alcohol</label>
+                <select name="alcohol">
+                    <option>No</option>
+                    <option>Occasional</option>
+                    <option>Frequent</option>
+                </select>
+            </div>
+
+            <button type="submit">🌿 Assess Health</button>
+        </form>
+    </div>
+
+
+    
+</div>
+</body>
+</html>

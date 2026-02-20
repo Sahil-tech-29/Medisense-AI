@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preventive Health Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container">
+
+    <a href="/preventive" class="back-link">⬅ Back to Assessment</a>
+
+    <h2>🌿 Preventive Health Risk Summary</h2>
+
+    <!-- Risk Cards -->
+    <div class="ai-box">
+        <div class="ai-content">
+            {% for risk, data in result.risks.items() %}
+            <div class="risk-row">
+                <h4>{{ risk }}</h4>
+
+                <span class="risk-badge {{ data.level|lower }}">
+                    {{ data.level }} Risk
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- AI Guidance -->
+    <div class="ai-box">
+        <details open>
+            <summary>🤖 AI Preventive Guidance</summary>
+            <div class="ai-content">
+                {{ result.guidance | safe }}
+            </div>
+        </details>
+    </div>
+
+</div>
+</body>
+</html>

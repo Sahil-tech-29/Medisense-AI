@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drug Side-Effect Risk</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container drug-page">
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+
+    <div class="page-header">
+        <h2>💊 Drug Side-Effect Risk Detection</h2>
+        <p>
+            Describe your experience after taking a medicine to
+            assess potential side-effect risk.
+        </p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            <label class="form-label">Describe your experience</label>
+            <textarea
+                name="review"
+                placeholder="e.g. I experienced nausea and dizziness after taking this medicine"
+                rows="5"
+            >{{ review or "" }}</textarea>
+
+            <button type="submit">Analyze Drug Risk</button>
+        </form>
+    </div>
+
+    {% if result %}
+        <div class="result-box condition-box drug-result">
+        <h3>💊 Side-Effect Risk Assessment</h3>
+
+        <h2 class="disease-name">
+            {{ result.risk_label }}
+        </h2>
+
+        <p class="confidence-text">
+            Confidence: {{ "%.2f"|format(result.confidence) }}%
+        </p>
+    </div>
+    {% endif %}
+
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+
+    {% if explanation %}
+        <div class="ai-box">
+            <details open>
+                <h3>🧠 AI Explanation</h3>
+                <div class="ai-content">
+                    {{ explanation | safe }}
+                </div>
+            </details>
+        </div>
+    {% endif %}
+
+
+
+</div>
+</body>
+</html>

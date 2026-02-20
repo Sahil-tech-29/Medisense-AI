@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medisense AI </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+<body>
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="container-hero-content">
+    <h1>Welcome to <span class="gradient-text">Medisense AI</span></h1>
+    <p>Your AI-powered health awareness platform.</p>
+
+    <!-- divider -->
+    <div class="hero-divider"></div>
+
+    <!-- button moved below divider -->
+    <a href="#services" class="btn-primary hero-btn">
+      Explore Services
+    </a>
+  </div>
+</section>
+
+<div class="scroll-indicator"></div>
+<!-- SERVICES -->
+<section id="services" class="services-section">
+    <div class="container">
+        <h2 class="section-title">Our Services</h2>
+
+        <div class="card-grid">
+
+            <a href="/symptom" class="service-card">
+                <div class="card-icon">🧪</div>
+                <h3>Symptom-Based Disease Prediction</h3>
+                <p>Predict possible conditions using your symptoms.</p>
+            </a>
+
+            <a href="/mental" class="service-card">
+                <div class="card-icon">💬</div>
+                <h3>Mental Health Awareness</h3>
+                <p>Emotional & mental well-being insights.</p>
+            </a>
+
+            <a href="/pdf" class="service-card">
+                <div class="card-icon">📄</div>
+                <h3>Medical Report Summary</h3>
+                <p>Upload medical PDF & get simplified explanation.</p>
+            </a>
+
+            <a href="/drug" class="service-card">
+                <div class="card-icon">💊</div>
+                <h3>Drug Side-Effect Risk</h3>
+                <p>Analyze drug experiences & side-effects.</p>
+            </a>
+
+            <a href="/preventive" class="service-card">
+                <div class="card-icon">🌿</div>
+                <h3>Preventive Health</h3>
+                <p>Lifestyle-based health risk insights.</p>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+
+
+<section class="how-it-works">
+  <div class="container">
+    <h2 class="section-title">How Medisense Works</h2>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-number">01</span>
+        <h3>Enter Your Data</h3>
+        <p>Provide symptoms, reports, or lifestyle details securely.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-number">02</span>
+        <h3>AI Analysis</h3>
+        <p>Our AI models analyze patterns using trained medical data.</p>
+      </div>
+
+      <div class="step-card">
+        <span class="step-number">03</span>
+        <h3>Get Insights</h3>
+        <p>Receive simplified, easy-to-understand health insights.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="why-medisense">
+  <div class="container">
+    <h2 class="section-title">Why Choose Medisense</h2>
+
+    <div class="features-grid">
+      <div class="feature-item">⚡ Fast AI-powered analysis</div>
+      <div class="feature-item">🔒 Privacy-focused & secure</div>
+      <div class="feature-item">🧠 Simplified medical explanations</div>
+      <div class="feature-item">📊 Multi-feature health insights</div>
+      <div class="feature-item">⚕️ Awareness-focused, not diagnosis</div>
+      <div class="feature-item">📱 Simple, user-friendly interface</div>
+
+    </div>
+  </div>
+</section>
+
+
+
+<section class="disclaimer-section">
+  <div class="container">
+    <p class="disclaimer-text">
+      ⚠️ Medisense provides AI-generated health insights for awareness only.
+      It does not replace professional medical diagnosis or treatment.
+    </p>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="container">
+    <h2>Start Your Health Journey with Medisense</h2>
+    <a href="#services" class="btn-primary">Get Started</a>
+  </div>
+</section>
+
+</body>
+
+<footer class="footer">
+  <p>© 2026 Medisense AI. Built for health awareness.</p>
+</footer>
+
+</html>

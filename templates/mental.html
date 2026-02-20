@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Health Awareness</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="container mental-page">
+
+    <a href="/" class="back-link">⬅ Back to Home</a>
+
+    <div class="page-header">
+        <h2>🧠 Mental Health Awareness</h2>
+        <p>
+            Describe how you have been feeling recently.
+            This helps provide awareness-based emotional insights.
+        </p>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            <label class="form-label">Describe your thoughts or feelings</label>
+            <textarea
+                name="text"
+                placeholder="e.g. I feel anxious, tired, overwhelmed"
+                rows="5"
+            >{{ text or "" }}</textarea>
+
+            <button type="submit">Analyze Mental State</button>
+        </form>
+    </div>
+
+
+    {% if error %}
+    <div class="warning">
+        {{ error }}
+    </div>
+    {% endif %}
+
+
+
+    {% if label %}
+    <!-- Result Card (same hierarchy as disease result) -->
+    <div class="result-box condition-box mental-result">
+        <h3>🧠 Detected Emotional Pattern</h3>
+        <h2 class="disease-name">{{ label }}</h2>
+    </div>
+    {% endif %}
+
+    {% if explanation %}
+    <!-- AI Explanation (same structure) -->
+    <div class="ai-box">
+        <details open>
+            <h3>💡 AI Insight</h3>
+            <div class="ai-content">
+                {{ explanation | safe }}
+            </div>
+        </details>
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>
