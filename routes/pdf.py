@@ -8,46 +8,33 @@ def pdf_page():
 
     # ---------- POST ----------
     if request.method == "POST":
-        action = request.form.get("action")
+        file = request.files.get("pdf")
 
-        # ---- Upload PDF ----
-        if action == "upload":
-            file = request.files.get("pdf")
-
-            if not file:
-                session["pdf_error"] = "Please upload a PDF file."
-                return redirect(url_for("pdf.pdf_page"))
-
-            output = process_medical_pdf(file)
-
-            if "error" in output:
-                session["pdf_error"] = output["error"]
-            else:
-                session["summary"] = output["summary"]
-                session["extracted_text"] = output["text"]
-                session["pdf_filename"] = file.filename
-                session["pdf_uploaded"] = True
-                session["view_mode"] = None
-
+        if not file:
+            session["pdf_error"] = "Please upload a PDF file."
             return redirect(url_for("pdf.pdf_page"))
 
-        # ---- View AI ----
-        if action == "view_ai":
-            session["view_mode"] = "ai"
-            return redirect(url_for("pdf.pdf_page"))
+        output = process_medical_pdf(file)
 
-        # ---- View Text ----
-        if action == "view_text":
-            session["view_mode"] = "text"
-            return redirect(url_for("pdf.pdf_page"))
+        if "error" in output:
+            session["pdf_error"] = output["error"]
+        else:
+            session["pdf_text"] = output["text"]
+            session["pdf_summary"] = output["summary"]
+            session["pdf_filename"] = file.filename
 
-    # ---------- GET ----------
+        return redirect(url_for("pdf.pdf_page"))
+
+    # ---------- GET (AUTO-CLEAR LIKE SYMPTOM) ----------
+    extracted_text = session.pop("pdf_text", None)
+    summary = session.pop("pdf_summary", None)
+    filename = session.pop("pdf_filename", None)
+    error = session.pop("pdf_error", None)
+
     return render_template(
         "pdf.html",
-        error=session.pop("pdf_error", None),
-        summary=session.get("summary"),
-        extracted_text=session.get("extracted_text"),
-        view_mode=session.get("view_mode"),
-        uploaded=session.get("pdf_uploaded"),
-        filename=session.get("pdf_filename")
+        extracted_text=extracted_text,
+        summary=summary,
+        filename=filename,
+        error=error
     )

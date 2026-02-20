@@ -8,7 +8,7 @@
 <div class="container">
 
     <a href="/" class="back-link">⬅ Back to Home</a>
-
+    
     <h2>📄 Medical Report Summary</h2>
     <p>Upload a digital medical report (PDF).</p>
 
@@ -46,47 +46,32 @@
         <div class="error">{{ error }}</div>
     {% endif %}
 
-    {% if uploaded%}
-        <div class="button-row">
-
-            <form method="POST">
-                <input type="hidden" name="action" value="view_ai">
-                <button type="submit">🧠 View AI Explanation</button>
-            </form>
-
-            <form method="POST">
-                <input type="hidden" name="action" value="view_text">
-                <button type="submit" class="secondary">
-                    📄 View Extracted Text
-                </button>
-            </form>
-
+    {% if filename %}
+        <div class="result-box">
+        <h3>📎 Uploaded File</h3>
+        <p><strong>{{ filename }}</strong></p>
         </div>
     {% endif %}
 
-
-    {% if view_mode == "ai" %}
+    {% if extracted_text %}
         <div class="ai-box">
-            <div class="ai-header">
-                🧠 Simplified AI Explanation
-            </div>
-
-            <div class="ai-content">
-                {{ summary | safe }}
-            </div>
+        <div class="ai-header">
+            📄 Extracted Medical Report Text
+        </div>
+        <pre class="report-text">{{ extracted_text }}</pre>
         </div>
     {% endif %}
 
-    {% if view_mode == "text" %}
+    {% if summary %}
         <div class="ai-box">
-            <div class="ai-header">
-                📄 Extracted Report Text
-            </div>
-
-            <pre class="report-text">{{ extracted_text }}</pre>
+        <div class="ai-header">
+            🧠 Simplified AI Explanation
+        </div>
+        <div class="ai-content">
+            {{ summary | safe }}
+        </div>
         </div>
     {% endif %}
-
 
 </div>
 </body>

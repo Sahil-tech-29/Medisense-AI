@@ -25,7 +25,7 @@ ALLERGIC_TERMS = [
 ]
 
 CONCERNING_TERMS = [
-    "persistent pain", "severe pain",
+    "persistent pain", "severe pain","vomit","vomiting"
     "vomiting", "continuous vomiting",
     "dizziness", "faint",
     "high fever", "fever",
