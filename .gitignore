@@ -12,3 +12,6 @@ uploads/
 
 # OS
 .DS_Store
+
+
+.streamlit/secrets.toml
