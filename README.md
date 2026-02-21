@@ -109,6 +109,7 @@ It integrates **Machine Learning, Generative AI, secure authentication, session 
 | Frontend | HTML, CSS |
 | AI | Groq LLM |
 | ML | TensorFlow, Scikit-Learn |
+| DL | NLP, LSTM |
 | Database | SQLite |
 | ORM | Flask-SQLAlchemy |
 | Auth | Sessions + Password Hashing |
@@ -147,3 +148,56 @@ medisense/
 ├── static/
 └── medisense.db
 ```
+
+---
+
+## ⚙️ How to Run Locally
+
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/yourusername/medisense.git
+cd medisense
+```
+
+### 2️⃣ Create virtual environment
+
+```bash
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+```
+
+### 3️⃣ Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4️⃣ Set environment variables
+```bash
+export GROQ_API_KEY=your_api_key_here
+```
+### 5️⃣ Run the app
+```bash
+python app.py
+```
+
+### ⚠️ Disclaimer
+
+Medisense is an AI-powered healthcare awareness platform.
+It does NOT provide medical diagnoses, prescriptions, or emergency instructions.
+Always consult qualified healthcare professionals for medical concerns.
+
+
+🌱 Future Enhancements
+
+- User activity dashboard
+- Downloadable reports
+- Admin analytics panel
+- Multi-language support
+- Doctor consultation integration
+- Cloud database (PostgreSQL)
+- OAuth login
+
+## 👨‍💻 Author
+
+##### Sahil Bhardwaj
+##### B.Tech CSE 
