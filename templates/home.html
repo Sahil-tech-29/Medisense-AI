@@ -13,6 +13,15 @@
 
 <!-- HERO SECTION -->
 <section class="hero">
+  
+<div class="top-bar">
+    <span class="welcome-text">
+        Welcome, <b>{{ session.get('username', 'User') }}</b>
+    </span>
+
+    <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a>
+</div>
+
   <div class="container-hero-content">
     <h1>Welcome to <span class="gradient-text">Medisense AI</span></h1>
     <p>Your AI-powered health awareness platform.</p>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register | Medisense AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container auth-box">
+
+    <h2>📝 Create Account</h2>
+    <p class="auth-sub">Join Medisense and track your health insights</p>
+
+    <form method="POST" onsubmit="return validateRegister()">
+
+        <label>Username</label>
+        <input type="text" id="username" name="username"
+               placeholder="Choose a username"
+               required minlength="3">
+
+        <small id="userError" class="form-error"></small>
+
+        <label>Password</label>
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password"
+                   placeholder="Create password"
+                   required minlength="6"
+                   oninput="checkStrength()">
+            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+        </div>
+
+        <small id="passError" class="form-error"></small>
+        <small id="strengthMsg" class="strength"></small>
+
+        <label>Confirm Password</label>
+        <div class="password-wrapper">
+            <input type="password" id="confirm"
+                   placeholder="Re-enter password"
+                   required minlength="6">
+            <span class="toggle-password" onclick="togglePassword('confirm')">👁️</span>
+        </div>
+
+        <small id="confirmError" class="form-error"></small>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <p class="auth-footer">
+        Already have an account?
+        <a href="{{ url_for('auth.login') }}">Login</a>
+    </p>
+
+</div>
+
+<script>
+function togglePassword(id) {
+    const field = document.getElementById(id);
+    field.type = field.type === "password" ? "text" : "password";
+}
+
+function checkStrength() {
+    const pass = document.getElementById("password").value;
+    const msg = document.getElementById("strengthMsg");
+
+    if (pass.length < 6) {
+        msg.textContent = "Weak password";
+        msg.style.color = "#dc2626";
+    } else if (pass.match(/[A-Z]/) && pass.match(/[0-9]/)) {
+        msg.textContent = "Strong password";
+        msg.style.color = "#16a34a";
+    } else {
+        msg.textContent = "Medium strength";
+        msg.style.color = "#f59e0b";
+    }
+}
+
+function validateRegister() {
+    let valid = true;
+
+    const user = document.getElementById("username");
+    const pass = document.getElementById("password");
+    const confirm = document.getElementById("confirm");
+
+    document.getElementById("userError").textContent = "";
+    document.getElementById("passError").textContent = "";
+    document.getElementById("confirmError").textContent = "";
+
+    if (user.value.length < 3) {
+        document.getElementById("userError").textContent =
+            "Username must be at least 3 characters";
+        valid = false;
+    }
+
+    if (pass.value.length < 6) {
+        document.getElementById("passError").textContent =
+            "Password must be at least 6 characters";
+        valid = false;
+    }
+
+    if (pass.value !== confirm.value) {
+        document.getElementById("confirmError").textContent =
+            "Passwords do not match";
+        valid = false;
+    }
+
+    return valid;
+}
+</script>
+
+</body>
+</html>

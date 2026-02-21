@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | Medisense AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container auth-box">
+
+    <h2>🔐 Login to Medisense</h2>
+    <p class="auth-sub">Secure access to your health insights</p>
+
+    <form method="POST" onsubmit="return validateForm()">
+
+        <label>Username</label>
+        <input type="text" id="username" name="username"
+               placeholder="Enter username"
+               required minlength="3">
+
+        <small id="userError" class="form-error"></small>
+
+        <label>Password</label>
+
+        <div class="password-wrapper">
+            <input type="password" id="password" name="password"
+                   placeholder="Enter password"
+                   required minlength="6">
+
+            <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <small id="passError" class="form-error"></small>
+
+        <button type="submit" id="loginBtn">Login</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <p class="auth-footer">
+        Don’t have an account?
+        <a href="{{ url_for('auth.register') }}">Create one</a>
+    </p>
+
+</div>
+
+<script>
+function togglePassword() {
+    const pwd = document.getElementById("password");
+    pwd.type = pwd.type === "password" ? "text" : "password";
+}
+
+function validateForm() {
+    let valid = true;
+
+    const user = document.getElementById("username");
+    const pass = document.getElementById("password");
+
+    document.getElementById("userError").innerText = "";
+    document.getElementById("passError").innerText = "";
+
+    if (user.value.length < 3) {
+        document.getElementById("userError").innerText =
+            "Username must be at least 3 characters";
+        valid = false;
+    }
+
+    if (pass.value.length < 6) {
+        document.getElementById("passError").innerText =
+            "Password must be at least 6 characters";
+        valid = false;
+    }
+
+    return valid;
+}
+</script>
+
+</body>
+</html>

@@ -53,6 +53,15 @@ def mental_page():
     explanation = session.pop("last_mental_explanation", None)
     error = session.pop("mental_error", None)
 
+
+    from utils.activity_logger import log_activity
+
+    log_activity(
+        module="mental_health",
+        user_input=text,
+        ai_output=explanation
+    )
+    
     return render_template(
         "mental.html",
         text=text,
