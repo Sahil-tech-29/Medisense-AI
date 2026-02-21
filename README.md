@@ -116,3 +116,34 @@ It integrates **Machine Learning, Generative AI, secure authentication, session 
 ---
 
 ## 📂 Project Structure
+```bash
+medisense/
+│
+├── app.py
+├── database.py
+├── models.py
+│
+├── routes/
+│   ├── auth.py
+│   ├── symptom.py
+│   ├── mental.py
+│   ├── pdf.py
+│   ├── drug.py
+│   └── preventive.py
+│
+├── services/
+│   ├── symptom.py
+│   ├── mental_health.py
+│   ├── pdf.py
+│   ├── drug.py
+│   └── preventive.py
+│
+├── utils/
+│   ├── auth.py
+│   ├── groq_client.py
+│   └── activity_logger.py
+│
+├── templates/
+├── static/
+└── medisense.db
+```
