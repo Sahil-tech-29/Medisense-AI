@@ -67,8 +67,8 @@
         <div class="diagnosis-card" data-animate>
             <div class="diag-header">
                 <div class="diag-label">Primary Diagnosis</div>
-                <div class="diag-badge {% if confidence and confidence >= 0.65 %}badge-lstm{% else %}badge-llm{% endif %}">
-                    {% if confidence and confidence >= 0.65 %}
+                <div class="diag-badge {% if confidence and confidence >= 65 %}badge-lstm{% else %}badge-llm{% endif %}">
+                    {% if confidence and confidence >=  65 %}
                         ⚡ LSTM Model
                     {% else %}
                         🤖 Groq LLM Verified
@@ -85,15 +85,15 @@
             <div class="conf-meter">
                 <div class="conf-header">
                     <span class="conf-label">LSTM Confidence</span>
-                    <span class="conf-value {% if confidence >= 0.65 %}conf-high{% elif confidence >= 0.4 %}conf-mid{% else %}conf-low{% endif %}">
-                        {{ "%.1f"|format(confidence * 100) }}%
+                    <span class="conf-value {% if confidence >= 65 %}conf-high{% elif confidence >= 40 %}conf-mid{% else %}conf-low{% endif %}">
+                        {{ confidence }}%
                     </span>
                 </div>
                 <div class="conf-track">
-                    <div class="conf-fill" style="width: {{ "%.1f"|format(confidence * 100) }}%"
-                         data-width="{{ "%.1f"|format(confidence * 100) }}"></div>
+                    <div class="conf-fill" style="width: {{ confidence }}%"
+                         data-width="{{ confidence }}"></div>
                 </div>
-                {% if confidence < 0.65 %}
+                {% if confidence < 65 %}
                 <div class="conf-note">
                     ⚠️ Low LSTM confidence — result verified by Groq LLaMA&nbsp;3 for accuracy
                 </div>
@@ -117,9 +117,9 @@
                         <div class="top3-disease">{{ item.disease }}</div>
                         <div class="top3-bar-wrap">
                             <div class="top3-bar">
-                                <div class="top3-fill" style="width: {{ "%.1f"|format(item.confidence * 100) }}%"></div>
+                                <div class="top3-fill" style="width: {{ item.confidence }}%"></div>
                             </div>
-                            <span class="top3-pct">{{ "%.1f"|format(item.confidence * 100) }}%</span>
+                            <span class="top3-pct">{{ item.confidence }}%</span>
                         </div>
                     </div>
                 </div>
