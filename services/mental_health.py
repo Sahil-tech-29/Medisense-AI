@@ -6,13 +6,32 @@ import re
 import string
 
 # Load saved model 
-model = load_model("model/mental_health/mental_model.h5" ,compile = False)
+model = None
+tokenizer = None
+le = None
 
-with open("model/mental_health/tokenizer.pkl", "rb") as f:
-    tokenizer = pickle.load(f)
+def get_model():
+    global model
 
-with open("model/mental_health/label_encoder.pkl", "rb") as f:
-    le = pickle.load(f)
+    if model is None:
+        model = load_model(
+            "model/mental_health/mental_model.h5",
+            compile=False
+        )
+
+    return model
+
+
+def load_resources():
+    global tokenizer, le
+
+    if tokenizer is None:
+        with open("model/mental_health/tokenizer.pkl", "rb") as f:
+            tokenizer = pickle.load(f)
+
+    if le is None:
+        with open("model/mental_health/label_encoder.pkl", "rb") as f:
+            le = pickle.load(f)
 
 # Keeping the max length same as in ipynb file 
 MAX_LEN = 120
@@ -29,12 +48,14 @@ def clean_text(text: str) -> str:
 # LSTM prediction - Return top-3 LSTM predictions with normalized confidence.
 
 def predict_top3(text: str) -> list:
+    load_resources()
     text = clean_text(text)
 
     seq = tokenizer.texts_to_sequences([text])
     pad = pad_sequences(seq, maxlen=MAX_LEN)
 
-    probs = model.predict(pad, verbose=0)[0]
+    current_model = get_model()
+    probs = current_model.predict(pad, verbose=0)[0]
 
     total = np.sum(probs)
     if total == 0:

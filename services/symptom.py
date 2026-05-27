@@ -6,13 +6,27 @@ import re
 import string
 
 # Load saved model 
-model = load_model("model/symptom_model1.h5", compile=False)
+# model = load_model("model/symptom_model1.h5", compile=False) - change
+model = None
+tokenizer = None
+le = None
 
-with open("model/tokenizer.pkl", "rb") as f:
-    tokenizer = pickle.load(f)
+def get_model():
+    global model
+    if model is None:
+        model = load_model("model/symptom_model1.h5", compile=False)
+    return model
 
-with open("model/label_encoder.pkl", "rb") as f:
-    le = pickle.load(f)
+def load_resources():
+    global tokenizer, le
+
+    if tokenizer is None:
+        with open("model/tokenizer.pkl", "rb") as f:
+            tokenizer = pickle.load(f)
+
+    if le is None:
+        with open("model/label_encoder.pkl", "rb") as f:
+            le = pickle.load(f)
 
 # Keeping the max length same as in ipynb file 
 MAX_LEN = 120
@@ -141,14 +155,18 @@ def calculate_severity(symptoms: str) -> str:
 # LSTM prediction - Return top-3 LSTM predictions with normalized confidence.
 
 def predict_top3(symptoms: str) -> list:
-    
+    load_resources()
     symptoms = clean_symptom_input(symptoms)
 
     seq = tokenizer.texts_to_sequences([symptoms])
     pad = pad_sequences(seq, maxlen=MAX_LEN, padding="post")
 
     # Taking help of probability
-    probs = model.predict(pad, verbose=0)[0]
+    # probs = model.predict(pad, verbose=0)[0]--change
+
+    current_model = get_model()
+    probs = current_model.predict(pad, verbose=0)[0]
+
     probs = probs.flatten()
     def calibrate_probs(probs, temperature=1.5):
         logits = np.log(probs + 1e-9)

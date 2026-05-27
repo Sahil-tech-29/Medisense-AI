@@ -7,21 +7,43 @@ import string
 
 
 # Load model
-model = load_model("model/drug_review/drug_model.h5", compile=False)
+model = None
+tokenizer = None
+le_sent = None
+le_side = None
+le_sev = None
 
-# Load tokenizer
-with open("model/drug_review/tokenizer.pkl", "rb") as f:
-    tokenizer = pickle.load(f)
 
-# Load encoders
-with open("model/drug_review/le_sent.pkl", "rb") as f:
-    le_sent = pickle.load(f)
+def get_model():
+    global model
 
-with open("model/drug_review/le_side.pkl", "rb") as f:
-    le_side = pickle.load(f)
+    if model is None:
+        model = load_model(
+            "model/drug_review/drug_model.h5",
+            compile=False
+        )
 
-with open("model/drug_review/le_sev.pkl", "rb") as f:
-    le_sev = pickle.load(f)
+    return model
+
+
+def load_resources():
+    global tokenizer, le_sent, le_side, le_sev
+
+    if tokenizer is None:
+        with open("model/drug_review/tokenizer.pkl", "rb") as f:
+            tokenizer = pickle.load(f)
+
+    if le_sent is None:
+        with open("model/drug_review/le_sent.pkl", "rb") as f:
+            le_sent = pickle.load(f)
+
+    if le_side is None:
+        with open("model/drug_review/le_side.pkl", "rb") as f:
+            le_side = pickle.load(f)
+
+    if le_sev is None:
+        with open("model/drug_review/le_sev.pkl", "rb") as f:
+            le_sev = pickle.load(f)
 
 MAX_LEN = 120
 
@@ -54,12 +76,14 @@ def is_valid_review(text: str) -> bool:
 # LSTM prediction - Return top-3 LSTM predictions with normalized confidence.
 
 def predict_review(review: str) -> dict:
+    load_resources()
     review = clean_review(review)
 
     seq = tokenizer.texts_to_sequences([review])
     pad = pad_sequences(seq, maxlen=MAX_LEN, padding="post")
 
-    sent_pred, side_pred, sev_pred = model.predict(pad, verbose=0)
+    current_model = get_model()
+    sent_pred, side_pred, sev_pred = current_model.predict(pad, verbose=0)
 
     sentiment = le_sent.inverse_transform([np.argmax(sent_pred)])[0]
     side = le_side.inverse_transform([np.argmax(side_pred)])[0]
