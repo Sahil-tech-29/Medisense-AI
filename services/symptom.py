@@ -185,12 +185,7 @@ def predict_top3(symptoms: str) -> list:
         for i in top3_idx
     ]
     for r in results:
-        r["confidence"] = min(r["confidence"], 0.85)
-
-    total = sum(r["confidence"] for r in results)
-    if total > 0:
-        for r in results:
-            r["confidence"] = r["confidence"] / total
+        r["confidence"] = round(r["confidence"] * 100, 1)
 
     return results
 
@@ -201,7 +196,7 @@ def verify_with_llm(symptoms: str, top3: list) -> str:
     from utils.groq_client import generate_with_groq
 
     options_block = "\n".join(
-        f"  {i+1}. {d['disease']} (LSTM confidence: {d['confidence']:.1%})"
+        f"  {i+1}. {d['disease']} (LSTM confidence: {d['confidence']}%)"
         for i, d in enumerate(top3)
     )
 
@@ -351,9 +346,9 @@ def final_prediction(symptoms: str) -> tuple:
     best_disease = top3[0]["disease"]
     confidence = top3[0]["confidence"]
     
-    if confidence > 0.9:
-        confidence = 0.85
-    if confidence >= 0.85:
+    if confidence > 95:
+        confidence = 85
+    if confidence >= 85:
         # LSTM is confident — use it directly
         final = best_disease
     else:
