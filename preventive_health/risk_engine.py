@@ -39,7 +39,12 @@ def calculate_health_risks(inputs):
 
     # Convert score → level
     final_results = {}
+
     for risk, score in risks.items():
+
+        # Normalize score (max possible ≈ 7)
+        normalized_score = min(score / 7, 1.0)
+
         if score <= 2:
             level = "Low"
             confidence = 0.75
@@ -47,13 +52,13 @@ def calculate_health_risks(inputs):
             level = "Moderate"
             confidence = 0.82
         else:
-            level = "Elevated"
+            level = "High"
             confidence = 0.90
 
         final_results[risk] = {
-            "score": score,
+            "score": normalized_score,
             "level": level,
             "confidence": confidence
         }
 
-    return final_results
+    return final_results    

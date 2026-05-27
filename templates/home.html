@@ -1,150 +1,351 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Medisense AI </title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSense AI — Health Awareness Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 
-<!-- HERO SECTION -->
-<section class="hero">
-  
-<div class="top-bar">
-    <span class="welcome-text">
-        Welcome, <b>{{ session.get('username', 'User') }}</b>
-    </span>
-
-    <a href="{{ url_for('auth.logout') }}" class="logout-btn">Logout</a>
-</div>
-
-  <div class="container-hero-content">
-    <h1>Welcome to <span class="gradient-text">Medisense AI</span></h1>
-    <p>Your AI-powered health awareness platform.</p>
-
-    <!-- divider -->
-    <div class="hero-divider"></div>
-
-    <!-- button moved below divider -->
-    <a href="#services" class="btn-primary hero-btn">
-      Explore Services
+<!-- ── NAV ───────────────────────────────────────────────────── -->
+<nav class="nav" id="nav">
+    <a href="/" class="nav-brand">
+        <span class="brand-cross">✚</span>
+        <span class="brand-name">MediSense <em>AI</em></span>
     </a>
-  </div>
+
+    <div class="nav-right">
+        <span class="nav-user">
+            <span class="user-dot"></span>
+            {{ session.get('username', 'User') }}
+        </span>
+        <a href="{{ url_for('auth.logout') }}" class="nav-logout">Sign out</a>
+    </div>
+</nav>
+
+<!-- ── HERO ──────────────────────────────────────────────────── -->
+<section class="hero">
+
+    <!-- Background orbs -->
+    <div class="hero-orb hero-orb--1"></div>
+    <div class="hero-orb hero-orb--2"></div>
+    <div class="hero-orb hero-orb--3"></div>
+
+    <!-- Grid overlay texture -->
+    <div class="hero-grid"></div>
+
+    <div class="hero-inner">
+        <div class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            AI-Powered · Health Awareness Platform
+        </div>
+
+        <h1 class="hero-title">
+            Understand your<br>
+            health with <em>clarity</em>
+        </h1>
+
+        <p class="hero-sub">
+            MediSense AI combines trained clinical models with large language
+            reasoning to deliver personalised health insights — fast, private,
+            and easy to understand.
+        </p>
+
+        <div class="hero-cta-row">
+            <a href="#services" class="btn-primary">
+                Explore Services
+                <span class="btn-arrow">↓</span>
+            </a>
+            <span class="hero-stat">
+                <span class="stat-number">5</span>
+                <span class="stat-label">AI Health Modules</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div class="scroll-cue">
+        <span class="scroll-line"></span>
+        <span class="scroll-text">scroll</span>
+    </div>
 </section>
 
-<div class="scroll-indicator"></div>
-<!-- SERVICES -->
-<section id="services" class="services-section">
-    <div class="container">
-        <h2 class="section-title">Our Services</h2>
+<!-- ── SERVICES ───────────────────────────────────────────────── -->
+<section id="services" class="services">
+    <div class="section-wrap">
+
+        <div class="section-head">
+            <span class="section-tag">Services</span>
+            <h2 class="section-title">What MediSense can do</h2>
+            <p class="section-sub">
+                Five intelligent modules, each trained for a specific health domain.
+            </p>
+        </div>
 
         <div class="card-grid">
 
-            <a href="/symptom" class="service-card">
-                <div class="card-icon">🧪</div>
-                <h3>Symptom-Based Disease Prediction</h3>
-                <p>Predict possible conditions using your symptoms.</p>
+            <a href="/symptom" class="service-card" data-index="01">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <span class="card-icon">🧪</span>
+                </div>
+                <div class="card-index">01</div>
+                <h3 class="card-title">Symptom Analysis</h3>
+                <p class="card-desc">
+                    Describe symptoms in plain language. Our LSTM model predicts
+                    likely conditions, verified by Groq LLaMA 3.
+                </p>
+                <span class="card-cta">Analyse symptoms →</span>
             </a>
 
-            <a href="/mental" class="service-card">
-                <div class="card-icon">💬</div>
-                <h3>Mental Health Awareness</h3>
-                <p>Emotional & mental well-being insights.</p>
+            <a href="/mental" class="service-card" data-index="02">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <span class="card-icon">💬</span>
+                </div>
+                <div class="card-index">02</div>
+                <h3 class="card-title">Mental Health Awareness</h3>
+                <p class="card-desc">
+                    Share how you're feeling. AI analyses emotional patterns
+                    and provides supportive, actionable insights.
+                </p>
+                <span class="card-cta">Check well-being →</span>
             </a>
 
-            <a href="/pdf" class="service-card">
-                <div class="card-icon">📄</div>
-                <h3>Medical Report Summary</h3>
-                <p>Upload medical PDF & get simplified explanation.</p>
+            <a href="/pdf" class="service-card" data-index="03">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <span class="card-icon">📄</span>
+                </div>
+                <div class="card-index">03</div>
+                <h3 class="card-title">Report Summary</h3>
+                <p class="card-desc">
+                    Upload any medical PDF. Get a clear, simplified explanation
+                    of findings — no medical jargon.
+                </p>
+                <span class="card-cta">Upload report →</span>
             </a>
 
-            <a href="/drug" class="service-card">
-                <div class="card-icon">💊</div>
-                <h3>Drug Side-Effect Risk</h3>
-                <p>Analyze drug experiences & side-effects.</p>
+            <a href="/drug" class="service-card" data-index="04">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <span class="card-icon">💊</span>
+                </div>
+                <div class="card-index">04</div>
+                <h3 class="card-title">Drug Side-Effect Risk</h3>
+                <p class="card-desc">
+                    Describe your drug experience. AI surfaces potential
+                    side-effect risks and awareness guidance.
+                </p>
+                <span class="card-cta">Check drug risk →</span>
             </a>
 
-            <a href="/preventive" class="service-card">
-                <div class="card-icon">🌿</div>
-                <h3>Preventive Health</h3>
-                <p>Lifestyle-based health risk insights.</p>
+            <a href="/preventive" class="service-card" data-index="05">
+                <div class="card-glow"></div>
+                <div class="card-icon-wrap">
+                    <span class="card-icon">🌿</span>
+                </div>
+                <div class="card-index">05</div>
+                <h3 class="card-title">Preventive Health</h3>
+                <p class="card-desc">
+                    Share your lifestyle habits — sleep, diet, activity, stress.
+                    Receive personalised preventive risk awareness.
+                </p>
+                <span class="card-cta">Assess lifestyle →</span>
             </a>
 
         </div>
     </div>
 </section>
 
-
-
+<!-- ── HOW IT WORKS ────────────────────────────────────────────── -->
 <section class="how-it-works">
-  <div class="container">
-    <h2 class="section-title">How Medisense Works</h2>
+    <div class="section-wrap">
 
-    <div class="steps-grid">
-      <div class="step-card">
-        <span class="step-number">01</span>
-        <h3>Enter Your Data</h3>
-        <p>Provide symptoms, reports, or lifestyle details securely.</p>
-      </div>
+        <div class="section-head section-head--center">
+            <span class="section-tag">Process</span>
+            <h2 class="section-title">Three steps to insight</h2>
+        </div>
 
-      <div class="step-card">
-        <span class="step-number">02</span>
-        <h3>AI Analysis</h3>
-        <p>Our AI models analyze patterns using trained medical data.</p>
-      </div>
+        <div class="steps-row">
 
-      <div class="step-card">
-        <span class="step-number">03</span>
-        <h3>Get Insights</h3>
-        <p>Receive simplified, easy-to-understand health insights.</p>
-      </div>
+            <div class="step-item">
+                <div class="step-num">01</div>
+                <div class="step-connector"></div>
+                <h3 class="step-title">Enter Your Data</h3>
+                <p class="step-desc">
+                    Provide symptoms, upload reports, or fill in lifestyle
+                    details. Everything is processed locally — no data stored.
+                </p>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">02</div>
+                <div class="step-connector"></div>
+                <h3 class="step-title">AI Analysis</h3>
+                <p class="step-desc">
+                    Trained LSTM models analyse patterns. When confidence is
+                    low, Groq LLaMA 3 provides a second verification layer.
+                </p>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">03</div>
+                <div class="step-connector step-connector--last"></div>
+                <h3 class="step-title">Get Insights</h3>
+                <p class="step-desc">
+                    Receive clear, simplified health insights with confidence
+                    scores, risk levels, and AI-generated explanations.
+                </p>
+            </div>
+
+        </div>
     </div>
-  </div>
 </section>
 
+<!-- ── WHY MEDISENSE ─────────────────────────────────────────── -->
+<section class="why-section">
+    <div class="section-wrap">
 
-<section class="why-medisense">
-  <div class="container">
-    <h2 class="section-title">Why Choose Medisense</h2>
+        <div class="why-inner">
+            <div class="why-left">
+                <span class="section-tag">Why MediSense</span>
+                <h2 class="section-title why-title">
+                    Built for people,<br>not clinicians
+                </h2>
+                <p class="why-body">
+                    Most health tools are designed for doctors. MediSense is
+                    designed for you — plain language, instant insights,
+                    zero medical background required.
+                </p>
+            </div>
 
-    <div class="features-grid">
-      <div class="feature-item">⚡ Fast AI-powered analysis</div>
-      <div class="feature-item">🔒 Privacy-focused & secure</div>
-      <div class="feature-item">🧠 Simplified medical explanations</div>
-      <div class="feature-item">📊 Multi-feature health insights</div>
-      <div class="feature-item">⚕️ Awareness-focused, not diagnosis</div>
-      <div class="feature-item">📱 Simple, user-friendly interface</div>
+            <div class="why-right">
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <div>
+                            <strong>Fast AI Analysis</strong>
+                            <span>Results in seconds, not minutes</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🔒</span>
+                        <div>
+                            <strong>Privacy First</strong>
+                            <span>No health data is stored or shared</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">🧠</span>
+                        <div>
+                            <strong>Dual AI Layer</strong>
+                            <span>LSTM model + Groq LLM verification</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📊</span>
+                        <div>
+                            <strong>Confidence Scores</strong>
+                            <span>Always know how certain the model is</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">⚕️</span>
+                        <div>
+                            <strong>Awareness, Not Diagnosis</strong>
+                            <span>Educates rather than prescribes</span>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <span class="feature-icon">📱</span>
+                        <div>
+                            <strong>Any Device</strong>
+                            <span>Fully responsive on mobile & desktop</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
-  </div>
 </section>
 
-
-
+<!-- ── DISCLAIMER ────────────────────────────────────────────── -->
 <section class="disclaimer-section">
-  <div class="container">
-    <p class="disclaimer-text">
-      ⚠️ Medisense provides AI-generated health insights for awareness only.
-      It does not replace professional medical diagnosis or treatment.
-    </p>
-  </div>
+    <div class="section-wrap">
+        <div class="disclaimer-inner">
+            <span class="disclaimer-icon">⚕️</span>
+            <p>
+                <strong>Medical Disclaimer:</strong> MediSense AI provides
+                AI-generated health insights for awareness and educational
+                purposes only. It does not constitute medical advice, diagnosis,
+                or treatment. Always consult a qualified healthcare professional.
+            </p>
+        </div>
+    </div>
 </section>
 
+<!-- ── FINAL CTA ──────────────────────────────────────────────── -->
 <section class="final-cta">
-  <div class="container">
-    <h2>Start Your Health Journey with Medisense</h2>
-    <a href="#services" class="btn-primary">Get Started</a>
-  </div>
+    <div class="section-wrap">
+        <div class="cta-inner">
+            <div class="cta-orb"></div>
+            <span class="section-tag">Get Started</span>
+            <h2 class="cta-title">
+                Your health journey<br>starts here
+            </h2>
+            <p class="cta-sub">
+                Choose a module and get AI-powered insights in under a minute.
+            </p>
+            <a href="#services" class="btn-primary btn-primary--lg">
+                Explore All Services
+                <span class="btn-arrow">↑</span>
+            </a>
+        </div>
+    </div>
 </section>
 
-</body>
-
+<!-- ── FOOTER ────────────────────────────────────────────────── -->
 <footer class="footer">
-  <p>© 2026 Medisense AI. Built for health awareness.</p>
+    <div class="section-wrap">
+        <div class="footer-inner">
+            <a href="/" class="footer-brand">
+                <span class="brand-cross">✚</span> MediSense AI
+            </a>
+            <span class="footer-copy">© 2026 MediSense AI · Built for health awareness</span>
+            <span class="footer-note">Not a medical device</span>
+        </div>
+    </div>
 </footer>
 
+<script>
+// Nav shrink on scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+    nav.classList.toggle('nav--scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// Staggered reveal on scroll (Intersection Observer)
+const revealEls = document.querySelectorAll(
+    '.service-card, .step-item, .feature-item'
+);
+const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) {
+            e.target.classList.add('revealed');
+            io.unobserve(e.target);
+        }
+    });
+}, { threshold: 0.12 });
+revealEls.forEach((el, i) => {
+    el.style.setProperty('--reveal-delay', `${i * 70}ms`);
+    io.observe(el);
+});
+</script>
+</body>
 </html>

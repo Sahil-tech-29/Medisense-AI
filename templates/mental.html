@@ -1,66 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mental Health Awareness</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Analysis — MedPredict</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mental.css') }}">
 </head>
+
 <body>
 
+<div class="page-wrap">
 
-<div class="container mental-page">
+    <!-- NAV -->
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-cross">🧠</span> MediSense AI
+        </a>
+        <a href="/" class="nav-back">← Dashboard</a>
+    </nav>
 
-    <a href="/" class="back-link">⬅ Back to Home</a>
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-badge">AI-Powered · Mental Wellness</div>
+        <h1 class="hero-title">
+            Mental Health <em>Analysis</em>
+        </h1>
+        <p class="hero-sub">
+            Describe how you're feeling. Our AI model analyzes emotional patterns and provides supportive insights.
+        </p>
+    </header>
 
-    <div class="page-header">
-        <h2>🧠 Mental Health Awareness</h2>
+    <!-- INPUT -->
+    <section class="form-section">
+        <form method="POST" action="{{ url_for('mental.mental_page') }}" id="mentalForm">
+            <div class="textarea-wrap">
+                <label class="textarea-label">
+                    🧠 Describe your feelings
+                </label>
+                <textarea
+                    name="text"
+                    rows="4"
+                    placeholder="e.g. I feel stressed with work and keep overthinking everything..."
+                >{{ text or "" }}</textarea>
+            </div>
+
+            <button type="submit" class="predict-btn" id="submitBtn">
+                🧠 Analyse Feelings
+            </button>
+        </form>
+    </section>
+
+    <!-- RESULTS -->
+    {% if label %}
+<section class="results-section" id="results">
+
+    <!-- PRIMARY RESULT -->
+    <div class="diagnosis-card" data-animate>
+        <div class="diag-header">
+            <div class="diag-label">Detected Emotional State</div>
+
+            <div class="diag-badge {% if confidence and confidence >= 0.65 %}badge-lstm{% else %}badge-llm{% endif %}">
+                {% if confidence and confidence >= 0.65 %}
+                    ⚡ LSTM Model
+                {% else %}
+                    🤖 Groq LLM Verified
+                {% endif %}
+            </div>
+        </div>
+
+        <h2 class="diag-name">{{ label }}</h2>
+
+        <!-- Confidence -->
+        {% if confidence %}
+        <div class="conf-meter">
+            <div class="conf-header">
+                <span class="conf-label">Model Confidence</span>
+                <span class="conf-value 
+                    {% if confidence >= 0.65 %}conf-high
+                    {% elif confidence >= 0.4 %}conf-mid
+                    {% else %}conf-low{% endif %}">
+                    {{ "%.1f"|format(confidence * 100) }}%
+                </span>
+            </div>
+
+            <div class="conf-track">
+                <div class="conf-fill"
+                     style="width: {{ "%.1f"|format(confidence * 100) }}%"
+                     data-width="{{ "%.1f"|format(confidence * 100) }}">
+                </div>
+            </div>
+
+            {% if confidence < 0.65 %}
+            <div class="conf-note">
+                ⚠️ Low confidence — result refined using AI for better understanding
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- TOP 3 -->
+    {% if top3 %}
+    <div class="top3-card" data-animate data-delay="1">
+
+        <div class="card-title-row">
+            <h3 class="card-title">🔍 Other Possible States</h3>
+            <span class="card-subtitle">Model predictions</span>
+        </div>
+
+        <div class="top3-list">
+            {% for item in top3 %}
+            <div class="top3-item {% if loop.index == 1 %}top3-primary{% endif %}">
+
+                <div class="top3-rank">{{ loop.index }}</div>
+
+                <div class="top3-info">
+                    <div class="top3-disease">{{ item.label }}</div>
+
+                    <div class="top3-bar-wrap">
+                        <div class="top3-bar">
+                            <div class="top3-fill"
+                                 style="width: {{ "%.1f"|format(item.confidence * 100) }}%">
+                            </div>
+                        </div>
+
+                        <span class="top3-pct">
+                            {{ "%.1f"|format(item.confidence * 100) }}%
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- AI INSIGHT -->
+    {% if explanation %}
+    <div class="explanation-card" data-animate data-delay="2">
+
+        <div class="explanation-header">
+            <div class="explanation-icon">🤖</div>
+            <div>
+                <h3 class="explanation-title">AI Emotional Insight</h3>
+                <span class="explanation-sub">
+                    Generated by Groq LLaMA 3
+                </span>
+            </div>
+        </div>
+
+        <div class="explanation-body">
+            {{ explanation | safe }}
+        </div>
+
+    </div>
+    {% endif %}
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer" data-animate data-delay="3">
+        <span class="disclaimer-icon">🧠</span>
         <p>
-            Describe how you have been feeling recently.
-            This helps provide awareness-based emotional insights.
+            <strong>Note:</strong> This tool provides awareness only and does not replace professional mental health support.
         </p>
     </div>
 
-    <div class="form-card">
-        <form method="POST">
-            <label class="form-label">Describe your thoughts or feelings</label>
-            <textarea
-                name="text"
-                placeholder="e.g. I feel anxious, tired, overwhelmed"
-                rows="5"
-            >{{ text or "" }}</textarea>
+</section>
+{% endif %}
 
-            <button type="submit">Analyze Mental State</button>
-        </form>
-    </div>
+<script>
+document.getElementById("mentalForm").addEventListener("submit", function () {
+    const btn = document.getElementById("submitBtn");
+    btn.innerText = "Analyzing...";
+    btn.disabled = true;
+});
 
+document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll("[data-animate]");
+    cards.forEach((card, i) => {
+        const delay = (card.dataset.delay || i) * 120;
+        card.style.animationDelay = delay + "ms";
+        card.classList.add("animate-in");
+    });
 
-    {% if error %}
-    <div class="warning">
-        {{ error }}
-    </div>
-    {% endif %}
+    document.querySelectorAll(".conf-fill, .top3-fill").forEach(el => {
+        const w = el.style.width;
+        el.style.width = "0%";
+        setTimeout(() => { el.style.width = w; }, 300);
+    });
 
+    const results = document.getElementById("results");
+    if (results) {
+        setTimeout(() => results.scrollIntoView({ behavior: "smooth" }), 200);
+    }
+});
+</script>
 
-
-    {% if label %}
-    <!-- Result Card (same hierarchy as disease result) -->
-    <div class="result-box condition-box mental-result">
-        <h3>🧠 Detected Emotional Pattern</h3>
-        <h2 class="disease-name">{{ label }}</h2>
-    </div>
-    {% endif %}
-
-    {% if explanation %}
-    <!-- AI Explanation (same structure) -->
-    <div class="ai-box">
-        <details open>
-            <h3>💡 AI Insight</h3>
-            <div class="ai-content">
-                {{ explanation | safe }}
-            </div>
-        </details>
-    </div>
-    {% endif %}
-
-</div>
 </body>
 </html>

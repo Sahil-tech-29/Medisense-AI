@@ -1,73 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Drug Side-Effect Risk</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Review Analysis — MedPredict</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/drug.css') }}">
 </head>
 <body>
 
+<div class="page-wrap">
 
+    <!-- NAV -->
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-cross">✚</span> MediSense AI
+        </a>
+        <a href="/" class="nav-back">← Dashboard</a>
+    </nav>
 
-<div class="container drug-page">
-
-    <a href="/" class="back-link">⬅ Back to Home</a>
-
-    <div class="page-header">
-        <h2>💊 Drug Side-Effect Risk Detection</h2>
-        <p>
-            Describe your experience after taking a medicine to
-            assess potential side-effect risk.
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-badge">AI-Powered · Drug Safety Analysis</div>
+        <h1 class="hero-title">
+            Drug <em>Review Analysis</em>
+        </h1>
+        <p class="hero-sub">
+            Describe your experience with a medication. Our AI analyzes sentiment,
+            detects side effects, and evaluates severity using LSTM + LLM verification.
         </p>
-    </div>
+    </header>
 
-    <div class="form-card">
-        <form method="POST">
-            <label class="form-label">Describe your experience</label>
-            <textarea
-                name="review"
-                placeholder="e.g. I experienced nausea and dizziness after taking this medicine"
-                rows="5"
-            >{{ review or "" }}</textarea>
+    <!-- FORM -->
+    <section class="form-section">
+        <form method="POST" action="{{ url_for('drug.drug_page') }}" id="drugForm">
+            <div class="textarea-wrap">
+                <label class="textarea-label">
+                    <span class="label-icon">💊</span> Describe your experience
+                </label>
+                <textarea
+                    name="review"
+                    rows="4"
+                    placeholder="e.g. This medicine helped my pain but caused nausea and dizziness..."
+                >{{ review or "" }}</textarea>
+                <div class="char-hint">Include effects, benefits, and any side effects.</div>
+            </div>
 
-            <button type="submit">Analyze Drug Risk</button>
+            <button type="submit" class="predict-btn" id="submitBtn">
+                <span class="btn-icon">🔍</span>
+                <span class="btn-text">Analyze Review</span>
+                <span class="btn-loading" hidden>
+                    <span class="spinner"></span> Analysing…
+                </span>
+            </button>
         </form>
-    </div>
+    </section>
 
+    <!-- RESULTS -->
     {% if result %}
-        <div class="result-box condition-box drug-result">
-        <h3>💊 Side-Effect Risk Assessment</h3>
+    <section class="results-section" id="results">
 
-        <h2 class="disease-name">
-            {{ result.risk_label }}
-        </h2>
+        <!-- MAIN RESULT -->
+        <div class="diagnosis-card" data-animate>
+            <div class="diag-header">
+                <div class="diag-label">AI Analysis</div>
+                <div class="diag-badge">🤖 Hybrid AI</div>
+            </div>
 
-        <p class="confidence-text">
-            Confidence: {{ "%.2f"|format(result.confidence) }}%
-        </p>
-    </div>
-    {% endif %}
+            <h2 class="diag-name {{ result.sentiment | lower }}">
+                {{ result.sentiment }} Experience
+            </h2>
 
+            <p class="diag-desc">
+                Side Effects: <strong>{{ result.side_effects }}</strong> · 
+                Severity: <strong>{{ result.severity }}</strong>
+            </p>
 
-    {% if error %}
-        <div class="error">
-            {{ error }}
-        </div>
-    {% endif %}
-
-
-    {% if explanation %}
-        <div class="ai-box">
-            <details open>
-                <h3>🧠 AI Explanation</h3>
-                <div class="ai-content">
-                    {{ explanation | safe }}
+            <!-- CONFIDENCE -->
+            <div class="conf-meter">
+                <div class="conf-header">
+                    <span class="conf-label">Model Confidence</span>
+                    <span class="conf-value">
+                        {{ "%.1f"|format(result.confidence * 100) }}%
+                    </span>
                 </div>
-            </details>
+                <div class="conf-track">
+                    <div class="conf-fill" style="width: {{ "%.1f"|format(result.confidence * 100) }}%"></div>
+                </div>
+            </div>
         </div>
+
+        <!-- INFO GRID -->
+        <div class="info-grid">
+
+            <!-- SIDE EFFECT -->
+            <div class="info-card" data-animate data-delay="1">
+                <div class="info-card-icon">💊</div>
+                <h4 class="info-card-title">Side Effects</h4>
+                <span class="side-effect-badge {% if result.side_effects == 'Yes' %}side-yes{% else %}side-no{% endif %}">
+                    {{ result.side_effects }}
+                </span>
+            </div>
+
+            <!-- SEVERITY -->
+            <div class="info-card" data-animate data-delay="2">
+                <div class="info-card-icon">⚠️</div>
+                <h4 class="info-card-title">Severity</h4>
+                <p class="
+                    {% if result.severity == 'Severe' %}severity-high
+                    {% elif result.severity == 'Moderate' %}severity-mid
+                    {% else %}severity-low{% endif %}
+                ">
+                    {{ result.severity }}
+                </p>
+            </div>
+
+        </div>
+
+        <!-- EXPLANATION -->
+        {% if result.explanation %}
+        <div class="explanation-card" data-animate data-delay="3">
+            <div class="explanation-header">
+                <div class="explanation-icon">🤖</div>
+                <h3 class="explanation-title">AI Explanation</h3>
+            </div>
+            <div class="explanation-body">
+                {{ result.explanation | safe}}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- DISCLAIMER -->
+        <div class="disclaimer" data-animate data-delay="4">
+            ⚕️ This analysis is for awareness only. Consult a healthcare professional for medical advice.
+        </div>
+
+    </section>
     {% endif %}
-
-
 
 </div>
+
+<script>
+document.getElementById("drugForm").addEventListener("submit", function () {
+    const btn = document.getElementById("submitBtn");
+    btn.querySelector(".btn-text").hidden = true;
+    btn.querySelector(".btn-loading").hidden = false;
+    btn.disabled = true;
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll("[data-animate]");
+    cards.forEach((card, i) => {
+        const delay = (card.dataset.delay || i) * 120;
+        card.style.animationDelay = delay + "ms";
+        card.classList.add("animate-in");
+    });
+
+    const results = document.getElementById("results");
+    if (results) {
+        setTimeout(() => results.scrollIntoView({ behavior: "smooth" }), 200);
+    }
+});
+</script>
+
 </body>
 </html>

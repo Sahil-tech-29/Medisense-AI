@@ -1,58 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Register | Medisense AI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | MediSense AI</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
 </head>
 <body>
 
-<div class="container auth-box">
+<div class="auth-container">
 
-    <h2>📝 Create Account</h2>
-    <p class="auth-sub">Join Medisense and track your health insights</p>
+    <div class="auth-card">
 
-    <form method="POST" onsubmit="return validateRegister()">
-
-        <label>Username</label>
-        <input type="text" id="username" name="username"
-               placeholder="Choose a username"
-               required minlength="3">
-
-        <small id="userError" class="form-error"></small>
-
-        <label>Password</label>
-        <div class="password-wrapper">
-            <input type="password" id="password" name="password"
-                   placeholder="Create password"
-                   required minlength="6"
-                   oninput="checkStrength()">
-            <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+        <div class="auth-header">
+            <div class="auth-logo">✚</div>
+            <h2>Create <em>Account</em></h2>
+            <p>Join MediSense and start your health journey</p>
         </div>
 
-        <small id="passError" class="form-error"></small>
-        <small id="strengthMsg" class="strength"></small>
+        <form method="POST" onsubmit="return validateRegister()">
 
-        <label>Confirm Password</label>
-        <div class="password-wrapper">
-            <input type="password" id="confirm"
-                   placeholder="Re-enter password"
-                   required minlength="6">
-            <span class="toggle-password" onclick="togglePassword('confirm')">👁️</span>
-        </div>
+            <!-- Username -->
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="username" name="username"
+                       placeholder="Choose a username"
+                       required minlength="3">
+                <small id="userError" class="form-error"></small>
+            </div>
 
-        <small id="confirmError" class="form-error"></small>
+            <!-- Password -->
+            <div class="input-group">
+                <label>Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password"
+                           placeholder="Create password"
+                           required minlength="6"
+                           oninput="checkStrength()">
+                    <span class="toggle-password" onclick="togglePassword('password')">👁️</span>
+                </div>
 
-        <button type="submit">Create Account</button>
-    </form>
+                <!-- Strength bar -->
+                <div class="strength-bar">
+                    <div id="strengthFill"></div>
+                </div>
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
+                <small id="strengthMsg" class="strength"></small>
+                <small id="passError" class="form-error"></small>
+            </div>
 
-    <p class="auth-footer">
-        Already have an account?
-        <a href="{{ url_for('auth.login') }}">Login</a>
-    </p>
+            <!-- Confirm -->
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="confirm"
+                           placeholder="Re-enter password"
+                           required minlength="6">
+                    <span class="toggle-password" onclick="togglePassword('confirm')">👁️</span>
+                </div>
+                <small id="confirmError" class="form-error"></small>
+            </div>
+
+            <button type="submit" class="btn-primary auth-btn">
+                Create Account →
+            </button>
+
+        </form>
+
+        {% if error %}
+            <div class="auth-error">{{ error }}</div>
+        {% endif %}
+
+        <p class="auth-footer">
+            Already have an account?
+            <a href="{{ url_for('auth.login') }}">Login</a>
+        </p>
+
+    </div>
 
 </div>
 
@@ -65,16 +93,23 @@ function togglePassword(id) {
 function checkStrength() {
     const pass = document.getElementById("password").value;
     const msg = document.getElementById("strengthMsg");
+    const fill = document.getElementById("strengthFill");
 
     if (pass.length < 6) {
         msg.textContent = "Weak password";
         msg.style.color = "#dc2626";
+        fill.style.width = "30%";
+        fill.style.background = "#dc2626";
     } else if (pass.match(/[A-Z]/) && pass.match(/[0-9]/)) {
         msg.textContent = "Strong password";
         msg.style.color = "#16a34a";
+        fill.style.width = "100%";
+        fill.style.background = "#16a34a";
     } else {
         msg.textContent = "Medium strength";
         msg.style.color = "#f59e0b";
+        fill.style.width = "65%";
+        fill.style.background = "#f59e0b";
     }
 }
 

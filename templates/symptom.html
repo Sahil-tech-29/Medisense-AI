@@ -1,54 +1,238 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Disease Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symptom Analysis — MedPredict</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/symptom.css') }}">
 </head>
 <body>
 
+<div class="page-wrap">
 
+    <!-- ── Nav ─────────────────────────────────────────────── -->
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-cross">✚</span> MediSense AI
+        </a>
+        <a href="/" class="nav-back">← Dashboard</a>
+    </nav>
 
-<div class="container">
+    <!-- ── Hero ────────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero-badge">AI-Powered · Clinical Decision Support</div>
+        <h1 class="hero-title">
+            Symptom <em>Analysis</em>
+        </h1>
+        <p class="hero-sub">
+            Describe your symptoms in plain language. Our LSTM model predicts
+            the most likely condition — verified by Groq LLaMA&nbsp;3 when needed.
+        </p>
+    </header>
 
-    <a href="/" class="back-link">⬅ Back to Home</a>
+    <!-- ── Input Form ───────────────────────────────────────── -->
+    <section class="form-section">
+        <form method="POST" action="{{ url_for('symptom.symptom_page') }}" id="symptomForm">
+            <div class="textarea-wrap">
+                <label class="textarea-label" for="symptoms">
+                    <span class="label-icon">📋</span> Describe your symptoms
+                </label>
+                <textarea
+                    id="symptoms"
+                    name="symptoms"
+                    rows="4"
+                    placeholder="e.g. fever, severe headache, body pain, chills since 2 days…"
+                >{{ symptoms or "" }}</textarea>
+                <div class="char-hint">Be specific — mention duration, severity, and affected areas.</div>
+            </div>
 
-    <div class="page-header">
-        <h2>🩺 Symptom-Based Disease Prediction</h2>
-        <p>Enter your symptoms in plain language and get AI-based insights.</p>
-    </div>
-
-    <div class="form-card">
-        <form method="POST" action="{{ url_for('symptom.symptom_page') }}">
-            <label class="form-label">Describe your symptoms</label>
-            <textarea
-                name="symptoms"
-                placeholder="e.g. fever, headache, body pain"
-                rows="4"
-            >{{ symptoms or "" }}</textarea>
-
-            <button type="submit">Predict Disease</button>
+            <button type="submit" class="predict-btn" id="submitBtn">
+                <span class="btn-icon">🔬</span>
+                <span class="btn-text">Analyse Symptoms</span>
+                <span class="btn-loading" hidden>
+                    <span class="spinner"></span> Analysing…
+                </span>
+            </button>
         </form>
-    </div>
+    </section>
 
+    <!-- ── Results ──────────────────────────────────────────── -->
     {% if disease %}
-    <div class="result-box condition-box">
-        <h3>🧾 Possible Condition</h3>
-        <h2 class="disease-name">{{ disease }}</h2>
-    </div>
+    <section class="results-section" id="results">
 
-    <div class="ai-box">
-        <details open>
-            <h3>💡 AI Explanation</h3>
-            <div class="ai-content">
+        <!-- Primary diagnosis card -->
+        <div class="diagnosis-card" data-animate>
+            <div class="diag-header">
+                <div class="diag-label">Primary Diagnosis</div>
+                <div class="diag-badge {% if confidence and confidence >= 0.65 %}badge-lstm{% else %}badge-llm{% endif %}">
+                    {% if confidence and confidence >= 0.65 %}
+                        ⚡ LSTM Model
+                    {% else %}
+                        🤖 Groq LLM Verified
+                    {% endif %}
+                </div>
+            </div>
+            <h2 class="diag-name">{{ disease }}</h2>
+            {% if desc %}
+            <p class="diag-desc">{{ desc }}</p>
+            {% endif %}
+
+            <!-- Confidence meter -->
+            {% if confidence %}
+            <div class="conf-meter">
+                <div class="conf-header">
+                    <span class="conf-label">LSTM Confidence</span>
+                    <span class="conf-value {% if confidence >= 0.65 %}conf-high{% elif confidence >= 0.4 %}conf-mid{% else %}conf-low{% endif %}">
+                        {{ "%.1f"|format(confidence * 100) }}%
+                    </span>
+                </div>
+                <div class="conf-track">
+                    <div class="conf-fill" style="width: {{ "%.1f"|format(confidence * 100) }}%"
+                         data-width="{{ "%.1f"|format(confidence * 100) }}"></div>
+                </div>
+                {% if confidence < 0.65 %}
+                <div class="conf-note">
+                    ⚠️ Low LSTM confidence — result verified by Groq LLaMA&nbsp;3 for accuracy
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Top 3 predictions -->
+        {% if top3 %}
+        <div class="top3-card" data-animate data-delay="1">
+            <div class="card-title-row">
+                <h3 class="card-title">🔍 Differential Diagnoses</h3>
+                <span class="card-subtitle">LSTM top predictions</span>
+            </div>
+            <div class="top3-list">
+                {% for item in top3 %}
+                <div class="top3-item {% if loop.index == 1 %}top3-primary{% endif %}">
+                    <div class="top3-rank">{{ loop.index }}</div>
+                    <div class="top3-info">
+                        <div class="top3-disease">{{ item.disease }}</div>
+                        <div class="top3-bar-wrap">
+                            <div class="top3-bar">
+                                <div class="top3-fill" style="width: {{ "%.1f"|format(item.confidence * 100) }}%"></div>
+                            </div>
+                            <span class="top3-pct">{{ "%.1f"|format(item.confidence * 100) }}%</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Severity & Precautions grid -->
+        <div class="info-grid">
+
+            <!-- Risk -->
+            {% if risk %}
+            <div class="info-card risk-card" data-animate data-delay="2">
+                <div class="info-card-icon">⚠️</div>
+                <h4 class="info-card-title">Risk Level</h4>
+                <p class="risk-text
+                    {% if 'High' in risk %}risk-high
+                    {% elif 'Moderate' in risk %}risk-mid
+                    {% else %}risk-low{% endif %}">
+                    {{ risk }}
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Precautions -->
+            {% if precautions %}
+            <div class="info-card precautions-card" data-animate data-delay="3">
+                <div class="info-card-icon">🛡️</div>
+                <h4 class="info-card-title">Precautions</h4>
+                <ul class="precautions-list">
+                    {% for p in precautions %}
+                    <li>{{ p }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- AI Explanation -->
+        {% if explanation %}
+        <div class="explanation-card" data-animate data-delay="4">
+            <div class="explanation-header">
+                <div class="explanation-icon">🤖</div>
+                <div>
+                    <h3 class="explanation-title">AI Clinical Explanation</h3>
+                    <span class="explanation-sub">Generated by Groq LLaMA&nbsp;3&thinsp;·&thinsp;70B</span>
+                </div>
+            </div>
+            <div class="explanation-body">
                 {{ explanation | safe }}
             </div>
-        </details>
-    </div>
+        </div>
+        {% endif %}
+
+        <!-- Disclaimer -->
+        <div class="disclaimer" data-animate data-delay="5">
+            <span class="disclaimer-icon">⚕️</span>
+            <p>
+                <strong>Medical Disclaimer:</strong> This tool is for informational purposes only
+                and does not constitute medical advice. Always consult a qualified healthcare
+                professional for diagnosis and treatment.
+            </p>
+        </div>
+
+    </section>
     {% endif %}
 
+    <!-- Input not understood -->
+    {% if disease == "Input not understood" %}
+    <section class="results-section">
+        <div class="error-card">
+            <div class="error-icon">🔍</div>
+            <h3>Symptoms Not Recognised</h3>
+            <p>Please describe your symptoms more specifically using medical terms like
+            <em>fever, cough, headache, rash, pain</em>, etc.</p>
+        </div>
+    </section>
+    {% endif %}
 
+</div><!-- /page-wrap -->
 
+<script>
+// Show loading state on submit
+document.getElementById("symptomForm").addEventListener("submit", function () {
+    const btn = document.getElementById("submitBtn");
+    btn.querySelector(".btn-text").hidden = true;
+    btn.querySelector(".btn-loading").hidden = false;
+    btn.disabled = true;
+});
 
-</div>
+// Animate result cards on load
+document.addEventListener("DOMContentLoaded", function () {
+    const cards = document.querySelectorAll("[data-animate]");
+    cards.forEach((card, i) => {
+        const delay = (card.dataset.delay || i) * 120;
+        card.style.animationDelay = delay + "ms";
+        card.classList.add("animate-in");
+    });
+
+    // Animate confidence bar
+    document.querySelectorAll(".conf-fill, .top3-fill").forEach(el => {
+        const w = el.style.width;
+        el.style.width = "0%";
+        setTimeout(() => { el.style.width = w; }, 300);
+    });
+
+    // Scroll to results
+    const results = document.getElementById("results");
+    if (results) {
+        setTimeout(() => results.scrollIntoView({ behavior: "smooth", block: "start" }), 200);
+    }
+});
+</script>
 </body>
 </html>

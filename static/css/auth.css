@@ -1,0 +1,144 @@
+/* Container */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+/* Card */
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+}
+
+/* Header */
+.auth-header {
+    margin-bottom: 2rem;
+}
+
+.auth-logo {
+    width: 44px;
+    height: 44px;
+    margin: 0 auto 0.8rem;
+    background: var(--teal);
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-header h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+}
+
+.auth-header em {
+    color: var(--teal);
+    font-style: italic;
+}
+
+.auth-header p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* Inputs */
+.input-group {
+    text-align: left;
+    margin-bottom: 1.4rem;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.input-group input {
+    width: 100%;
+    margin-top: 0.3rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-size: 0.9rem;
+    transition: border 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--teal);
+    outline: none;
+}
+
+/* Password */
+.password-wrapper {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+/* Button */
+.auth-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Error */
+.form-error {
+    font-size: 0.7rem;
+    color: var(--red);
+}
+
+.auth-error {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--red);
+}
+
+/* Footer */
+.auth-footer {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+}
+
+.auth-footer a {
+    color: var(--teal);
+    font-weight: 600;
+}
+
+
+/* Strength bar */
+.strength-bar {
+    height: 6px;
+    background: var(--border-soft);
+    border-radius: 999px;
+    margin-top: 6px;
+    overflow: hidden;
+}
+
+#strengthFill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Strength text */
+.strength {
+    font-size: 0.75rem;
+    display: block;
+    margin-top: 4px;
+}

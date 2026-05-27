@@ -1,104 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Preventive Health</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preventive Health — MediSense AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/preventive.css') }}">
 </head>
 <body>
 
-<div class="container preventive-page">
+<div class="page-wrap">
 
-    <!-- Back -->
-    <a href="/" class="back-link">⬅ Back to Home</a>
+    <!-- ── Nav ──────────────────────────────────────────── -->
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-leaf">🌿</span> MediSense AI
+        </a>
+        <a href="/" class="nav-back">← Dashboard</a>
+    </nav>
 
-    <!-- Page Header -->
-    <div class="page-header">
-        <h2>🌿 Preventive Health Risk Awareness</h2>
-        <p>
-            Provide lifestyle and daily habit details to receive
-            AI-based preventive health awareness insights.
+    <!-- ── Hero ─────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero-badge">Lifestyle Analysis · AI-Powered</div>
+        <h1 class="hero-title">Preventive Health <em>Risk Awareness</em></h1>
+        <p class="hero-sub">
+            Share your daily habits and lifestyle details. Our AI analyses
+            your patterns and surfaces personalised preventive health insights.
         </p>
-    </div>
+    </header>
 
-
+    <!-- ── Inline warning ───────────────────────────────── -->
     {% if error %}
-    <div class="inline-warning">
-        ⚠️ {{ error }}
+    <div class="alert-banner">
+        <span class="alert-icon">⚠️</span>
+        <span>{{ error }}</span>
     </div>
     {% endif %}
 
-    <!-- Form Card -->
+    <!-- ── Form card ─────────────────────────────────────── -->
     <div class="form-card">
-        <form method="POST">
 
-            <div class="form-group">
-                <label class="form-label">Age</label>
-                <input type="number" name="age" min="0" max="100"
-                       placeholder="Enter age" required>
+        <div class="form-card-header">
+            <span class="form-card-eyebrow">Step 1 of 1</span>
+            <h2 class="form-card-title">Your Lifestyle Profile</h2>
+            <p class="form-card-sub">All fields are used solely to generate awareness insights.</p>
+        </div>
+
+        <form method="POST" id="preventiveForm">
+
+            <!-- Row 1: Age + Activity -->
+            <div class="field-row">
+                <div class="form-group">
+                    <label class="form-label" for="age">Age</label>
+                    <div class="input-wrap">
+                        <input type="number" id="age" name="age" min="0" max="120"
+                               placeholder="e.g. 34" required autocomplete="off">
+                        <span class="input-unit">yrs</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="activity">Physical Activity</label>
+                    <div class="select-wrap">
+                        <select id="activity" name="activity" required>
+                            <option value="" disabled selected>Select level</option>
+                            <option value="High">High — regular exercise</option>
+                            <option value="Moderate">Moderate</option>
+                            <option value="Low">Low — mostly sedentary</option>
+                        </select>
+                        <span class="select-arrow">▾</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Physical Activity</label>
-                <select name="activity">
-                    <option value="" disabled selected>Select activity level</option>
-                    <option value="High">High (regular exercise)</option>
-                    <option value="Moderate">Moderate</option>
-                    <option value="Low">Low (sedentary)</option>
-                </select>
+            <!-- Row 2: Diet + Smoking -->
+            <div class="field-row">
+                <div class="form-group">
+                    <label class="form-label" for="diet">Diet Pattern</label>
+                    <div class="select-wrap">
+                        <select id="diet" name="diet" required>
+                            <option value="" disabled selected>Select pattern</option>
+                            <option value="Balanced">Balanced</option>
+                            <option value="Mixed">Mixed</option>
+                            <option value="Junk / Irregular">Junk / Irregular</option>
+                        </select>
+                        <span class="select-arrow">▾</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="smoking">Smoking</label>
+                    <div class="select-wrap">
+                        <select id="smoking" name="smoking">
+                            <option value="No">No</option>
+                            <option value="Occasional">Occasional</option>
+                            <option value="Regular">Regular</option>
+                        </select>
+                        <span class="select-arrow">▾</span>
+                    </div>
+                </div>
             </div>
 
+            <!-- Alcohol -->
             <div class="form-group">
-                <label class="form-label">Diet Pattern</label>
-                <select name="diet">
-                    <option value="" disabled selected>Select diet pattern</option>
-                    <option value="Balanced">Balanced</option>
-                    <option value="Mixed">Mixed</option>
-                    <option value="Junk / Irregular">Junk / Irregular</option>
-                </select>
+                <label class="form-label" for="alcohol">Alcohol Consumption</label>
+                <div class="radio-group">
+                    <label class="radio-pill">
+                        <input type="radio" name="alcohol" value="No" checked>
+                        <span>None</span>
+                    </label>
+                    <label class="radio-pill">
+                        <input type="radio" name="alcohol" value="Occasional">
+                        <span>Occasional</span>
+                    </label>
+                    <label class="radio-pill">
+                        <input type="radio" name="alcohol" value="Frequent">
+                        <span>Frequent</span>
+                    </label>
+                </div>
             </div>
 
+            <!-- Sleep range -->
             <div class="form-group">
-                <label class="form-label">Sleep Duration (hours)</label>
-                <input type="range" name="sleep" min="0" max="15" value="0"
-                       oninput="sleepVal.innerText=this.value">
-                <span class="range-value">
-                    <b><span id="sleepVal">-</span> hours</b>
+                <label class="form-label">
+                    Sleep Duration
+                    <span class="range-badge"><span id="sleepVal">7</span> hrs / night</span>
+                </label>
+                <div class="range-wrap">
+                    <span class="range-end">0h</span>
+                    <input type="range" name="sleep" id="sleepRange"
+                           min="0" max="15" value="7"
+                           oninput="sleepVal.textContent=this.value">
+                    <span class="range-end">15h</span>
+                </div>
+                <div class="range-labels">
+                    <span>Insufficient</span><span>Optimal (7–9h)</span><span>Excessive</span>
+                </div>
+            </div>
+
+            <!-- Stress range -->
+            <div class="form-group">
+                <label class="form-label">
+                    Stress Level
+                    <span class="range-badge" id="stressLabel">Level <span id="stressVal">1</span> — Low</span>
+                </label>
+                <div class="range-wrap">
+                    <span class="range-end">1</span>
+                    <input type="range" name="stress" id="stressRange"
+                           min="1" max="5" value="1"
+                           oninput="updateStress(this.value)">
+                    <span class="range-end">5</span>
+                </div>
+                <div class="range-labels">
+                    <span>Low</span><span>Moderate</span><span>Very High</span>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-text">🌿 Assess My Health</span>
+                <span class="btn-loading" hidden>
+                    <span class="spinner"></span> Analysing…
                 </span>
-            </div>
+            </button>
 
-            <div class="form-group">
-                <label class="form-label">Stress Level (1 = Low, 5 = Very High)</label>
-                <input type="range" name="stress" min="1" max="5" value="1"
-                       oninput="stressVal.innerText=this.value">
-                <span class="range-value">
-                    <b>Level <span id="stressVal">1</span></b>
-                </span>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Smoking</label>
-                <select name="smoking">
-                    <option>No</option>
-                    <option>Occasional</option>
-                    <option>Regular</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Alcohol</label>
-                <select name="alcohol">
-                    <option>No</option>
-                    <option>Occasional</option>
-                    <option>Frequent</option>
-                </select>
-            </div>
-
-            <button type="submit">🌿 Assess Health</button>
         </form>
     </div>
 
+    <!-- ── Footer note ───────────────────────────────────── -->
+    <p class="footer-note">
+        ⚕️ This tool provides awareness only and is not a substitute for
+        professional medical advice.
+    </p>
 
-    
 </div>
+
+<script>
+const stressLabels = ["","Low","Mild","Moderate","High","Very High"];
+
+function updateStress(val) {
+    document.getElementById("stressVal").textContent = val;
+    document.getElementById("stressLabel").innerHTML =
+        `Level <span id="stressVal">${val}</span> — ${stressLabels[val]}`;
+}
+
+document.getElementById("preventiveForm").addEventListener("submit", function () {
+    const btn = document.getElementById("submitBtn");
+    btn.querySelector(".btn-text").hidden = true;
+    btn.querySelector(".btn-loading").hidden = false;
+    btn.disabled = true;
+});
+
+// Initialise sleep display
+document.getElementById("sleepVal").textContent =
+    document.getElementById("sleepRange").value;
+</script>
 </body>
 </html>

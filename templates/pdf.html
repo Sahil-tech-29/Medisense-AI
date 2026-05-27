@@ -1,80 +1,252 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Medical Report Summary</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Report Summary — MedPredict</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pdf.css') }}">
 </head>
 <body>
 
+<div class="page-wrap">
 
-<div class="container">
+    <!-- ── Nav ──────────────────────────────────────────────── -->
+    <nav class="top-nav">
+        <a href="/" class="nav-logo">
+            <span class="logo-cross">✚</span> MediSense AI
+        </a>
+        <a href="/" class="nav-back">← Dashboard</a>
+    </nav>
 
-    <a href="/" class="back-link">⬅ Back to Home</a>
-    
-    <h2>📄 Medical Report Summary</h2>
-    <p>Upload a digital medical report (PDF).</p>
+    <!-- ── Hero ─────────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero-badge">AI-Powered · Report Intelligence</div>
+        <h1 class="hero-title">
+            Medical Report <em>Summary</em>
+        </h1>
+        <p class="hero-sub">
+            Upload your PDF medical report and our AI will extract the key findings,
+            translate clinical language into plain English, and highlight what matters.
+        </p>
+    </header>
 
-    <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="upload">
+    <!-- ── Upload Form ───────────────────────────────────────── -->
+    <section class="form-section">
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="hidden" name="action" value="upload">
 
-        <div class="file-upload">
-            <input type="file" id="pdfInput" name="pdf" accept=".pdf" hidden>
+            <!-- Drop zone -->
+            <div class="drop-zone" id="dropZone">
+                <input type="file" id="pdfInput" name="pdf" accept=".pdf" hidden>
 
-            <label for="pdfInput" class="file-box">
-                📂 Choose PDF file
-            </label>
+                <div class="drop-inner">
+                    <div class="drop-icon">📄</div>
+                    <p class="drop-title">Drop your PDF here</p>
+                    <p class="drop-sub">or <label for="pdfInput" class="drop-link">browse to upload</label></p>
+                    <p class="drop-hint">Supports PDF · Max 10MB</p>
+                </div>
 
-            <span id="fileName" class="file-name">
-                {{ filename if filename else "No file selected" }}
-            </span>
+                <!-- File selected state -->
+                <div class="file-selected" id="fileSelected" hidden>
+                    <div class="file-icon-wrap">
+                        <span class="file-icon">📎</span>
+                    </div>
+                    <div class="file-meta">
+                        <span class="file-name-text" id="fileName">
+                            {{ filename if filename else "" }}
+                        </span>
+                        <span class="file-tag">PDF Document</span>
+                    </div>
+                    <button type="button" class="file-clear" id="fileClear" aria-label="Remove file">✕</button>
+                </div>
+            </div>
 
+            <!-- Error -->
+            {% if error %}
+            <div class="form-error">
+                <span class="form-error-icon">⚠</span>
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="upload-btn" id="submitBtn">
+                <span class="btn-text">
+                    <span class="btn-icon">🔍</span> Analyse Report
+                </span>
+                <span class="btn-loading" hidden>
+                    <span class="spinner"></span> Analysing…
+                </span>
+            </button>
+        </form>
+    </section>
+
+    <!-- ── Results ───────────────────────────────────────────── -->
+    {% if filename or extracted_text or summary %}
+    <section class="results-section" id="results">
+
+        <!-- Uploaded file pill -->
+        {% if filename %}
+        <div class="file-result-pill" data-animate>
+            <span class="pill-icon">📎</span>
+            <span class="pill-name">{{ filename }}</span>
+            <span class="pill-badge">Uploaded</span>
+        </div>
+        {% endif %}
+
+        <!-- Extracted text -->
+        {% if extracted_text %}
+        <div class="result-card" data-animate data-delay="1">
+            <div class="result-card-header">
+                <div class="result-card-icon">📄</div>
+                <div>
+                    <h3 class="result-card-title">Extracted Report Text</h3>
+                    <span class="result-card-sub">Raw content from your PDF</span>
+                </div>
+                <button class="copy-btn" id="copyExtracted" data-target="extractedContent" title="Copy text">
+                    <span class="copy-icon">⎘</span>
+                    <span class="copy-label">Copy</span>
+                </button>
+            </div>
+            <div class="extracted-wrap">
+                <pre class="extracted-text" id="extractedContent">{{ extracted_text }}</pre>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- AI Summary -->
+        {% if summary %}
+        <div class="result-card summary-card" data-animate data-delay="2">
+            <div class="result-card-header">
+                <div class="result-card-icon">🧠</div>
+                <div>
+                    <h3 class="result-card-title">AI Simplified Explanation</h3>
+                    <span class="result-card-sub">Generated by Groq LLaMA&nbsp;3&thinsp;·&thinsp;Plain language summary</span>
+                </div>
+            </div>
+            <div class="summary-body">
+                {{ summary | safe }}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Disclaimer -->
+        <div class="disclaimer" data-animate data-delay="3">
+            <span class="disclaimer-icon">⚕️</span>
+            <p>
+                <strong>Medical Disclaimer:</strong> This AI-generated summary is for informational
+                purposes only. Always consult a qualified healthcare professional for interpretation
+                of medical reports and clinical decisions.
+            </p>
         </div>
 
-        <button type="submit">Upload Report</button>
-    </form>
+    </section>
+    {% endif %}
 
-    <script>
-    const pdfInput = document.getElementById("pdfInput");
-    const fileName = document.getElementById("fileName");
+</div><!-- /page-wrap -->
 
-    pdfInput.addEventListener("change", function () {
-        fileName.textContent = this.files.length
-            ? this.files[0].name
-            : "No file selected";
+<script>
+/* ── File input interactions ─────────────────────────────── */
+const pdfInput    = document.getElementById("pdfInput");
+const dropZone    = document.getElementById("dropZone");
+const fileSelected = document.getElementById("fileSelected");
+const fileName    = document.getElementById("fileName");
+const fileClear   = document.getElementById("fileClear");
+const submitBtn   = document.getElementById("submitBtn");
+const uploadForm  = document.getElementById("uploadForm");
+const dropInner   = dropZone.querySelector(".drop-inner");
+
+function showFile(name) {
+    fileName.textContent = name;
+    dropInner.hidden = true;
+    fileSelected.hidden = false;
+    dropZone.classList.add("has-file");
+}
+
+function clearFile() {
+    pdfInput.value = "";
+    dropInner.hidden = false;
+    fileSelected.hidden = true;
+    dropZone.classList.remove("has-file");
+}
+
+pdfInput.addEventListener("change", function () {
+    if (this.files.length) showFile(this.files[0].name);
+});
+
+fileClear.addEventListener("click", clearFile);
+
+/* Drag-and-drop */
+dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("drag-over");
+});
+
+["dragleave", "dragend"].forEach(evt =>
+    dropZone.addEventListener(evt, () => dropZone.classList.remove("drag-over"))
+);
+
+dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("drag-over");
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === "application/pdf") {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        pdfInput.files = dt.files;
+        showFile(file.name);
+    }
+});
+
+/* ── Form loading state ──────────────────────────────────── */
+uploadForm.addEventListener("submit", function () {
+    submitBtn.querySelector(".btn-text").hidden = true;
+    submitBtn.querySelector(".btn-loading").hidden = false;
+    submitBtn.disabled = true;
+});
+
+/* ── Copy button ─────────────────────────────────────────── */
+document.querySelectorAll(".copy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        navigator.clipboard.writeText(target.textContent.trim()).then(() => {
+            const label = btn.querySelector(".copy-label");
+            label.textContent = "Copied!";
+            btn.classList.add("copied");
+            setTimeout(() => {
+                label.textContent = "Copy";
+                btn.classList.remove("copied");
+            }, 2000);
+        });
     });
-    </script>
+});
 
-    {% if error %}
-        <div class="error">{{ error }}</div>
-    {% endif %}
+/* ── Animate results ─────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+    // Pre-fill file name if server-side rendered
+    const filename = "{{ filename | default('') }}";
 
-    {% if filename %}
-        <div class="result-box">
-        <h3>📎 Uploaded File</h3>
-        <p><strong>{{ filename }}</strong></p>
-        </div>
-    {% endif %}
+    if (filename) {
+        showFile(filename);
+    }
 
-    {% if extracted_text %}
-        <div class="ai-box">
-        <div class="ai-header">
-            📄 Extracted Medical Report Text
-        </div>
-        <pre class="report-text">{{ extracted_text }}</pre>
-        </div>
-    {% endif %}
+    // Stagger card animations
+    document.querySelectorAll("[data-animate]").forEach(el => {
+        const delay = (el.dataset.delay || 0) * 130;
+        el.style.animationDelay = delay + "ms";
+        el.classList.add("animate-in");
+    });
 
-    {% if summary %}
-        <div class="ai-box">
-        <div class="ai-header">
-            🧠 Simplified AI Explanation
-        </div>
-        <div class="ai-content">
-            {{ summary | safe }}
-        </div>
-        </div>
-    {% endif %}
+    // Scroll to results
+    const results = document.getElementById("results");
+    if (results) {
+        setTimeout(() => results.scrollIntoView({ behavior: "smooth", block: "start" }), 250);
+    }
+});
+</script>
 
-</div>
 </body>
 </html>
